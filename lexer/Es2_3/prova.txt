@@ -1,0 +1,44 @@
+// il codice scambia a1 e a2
+// se a1 > a2 attraverso l'utilizzo
+// di una variabile tmp
+cond (a1 > a2) then
+    tmp = a1;
+    a1 = a2;
+    a2 = tmp;
+
+/* I commenti possono anche essere fatti multiriga.
+ * questo ad esempio è un commento su quattro righe.
+ * che contine al suo interno caratteri vari, tra
+ * cui caratteri speciali, ///*, come @, #, § e    (tab).
+ */
+
+// Un numero può avere quante cifre vuole, a patto che sia intero
+18009766
+1002
+/* Un caso particolare è uno 0 seguito da un altro numero
+ * nella mia implementazione vengono riconosciuti due token
+ * uno per lo 0, uno per l'altro numero
+ */ /* Un commento
+ che segue un commento è perfettamente lecito! ***/
+457342*/123
+
+/* COMMENTO DI PROVA
+ * un /*commento può essere*//* molto complesso
+ */////ad esempio questo sembra non avere senso ma è una combinazione
+ // di commenti assolutamente legale //
+ /*** e quindi deve essere ignorato.
+ Certo, potremmo dire che solo un pazzo scriverebbe
+ *//*/*un/* commento di questo tipo, ma non si
+ sa //mai */
+
+
+// Un commento su una sola riga occupa tutta // la riga, non importa cosa segua *//* @
+when (__a1 > a2) then
+    __a1 = __a1+1;
+    a2 = a2+502;
+
+// Esistono molti operatori, alcuni esempi:
+&& || > < >= <= <>
+
+408
+/**/
