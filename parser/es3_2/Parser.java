@@ -1,28 +1,29 @@
 /*
-GUIDA(<prog> -><statlist>EOF) = {=,print,read,cond,while,{}
-GUIDA(<statlist> -> <stat><statlistp>) = {=,print,read,cond,while,{}
-GUIDA(<statlistp> -> ;<stat><statlistp>) = {;}
-GUIDA(<statlistp> -> eps) = follow(<statlistp>)={EOF,}}
-GUIDA(<stat> -> =ID<expr>) = {=}
-GUIDA(<stat> -> print (<expr>)) = {print}
-GUIDA(<stat> -> read (ID)) = {read}
-GUIDA(<stat> ->  cond<whenlist>else<stat>) = {cond}
-GUIDA(<stat> -> while(<bexpr>)<stat>) = {while}
-GUIDA(<stat> -> {<statlist>}) = {{}
-GUIDA(<whenlist> -> <whenitem><whenlistp>) = {when}
-GUIDA(<whenlistp> -> <whenitem><whenlistp>) = {when}
-GUIDA(<whenlistp> -> eps) = follow(<whenlistp>)={else}
-GUIDA(<whenitem> -> when(<bexpr>)do<stat>) = {when}
-GUIDA(<bexpr> -> RELOP<expr><expr>) = {RELOP}
-GUIDA(<expr> -> +(<exprlist>)) = {+}
-GUIDA(<expr> -> -<expr><expr>) = {-}
-GUIDA(<expr> -> *(<exprlist>)) = {*}
-GUIDA(<expr> -> /<expr><expr>) = {/}
-GUIDA(<expr> -> NUM) = {NUM}
-GUIDA(<expr> -> ID) = {ID}
-GUIDA(<exprlist> -> <expr><exprlistp>) = {+,-,*,/,NUM,ID}
-GUIDA(<exprlistp> -> <expr><exprlistp>) = {+,-,*,/,NUM,ID}
-GUIDA(<exprlistp> -> eps) = follow(<exprlistp>)={)}
+GUIDE:
+<prog> -> <statlist>EOF = {'=', print, read, cond, while, '{'}
+<statlist> -> <stat><statlistp> = {'=', print, read, cond, while, '{'}
+<statlistp> -> ;<stat><statlistp> = {;}
+<statlistp> -> eps = {'EOF', '}'}
+<stat> -> =ID<expr> = {'='}
+<stat> -> print(exprlist>) = {print}
+<stat> -> read(ID) = {read}
+<stat> -> cond<whenlist>else<stat> = {cond}
+<stat> -> while(<bexpr>)<stat> = {while}
+<stat> -> {<statlist>} = {'{'}
+<whenlist> -> <whenitem><whenlistp> = {when}
+<whenlistp> -> <whenitem><whenlistp> = {when}
+<whenlisp> -> eps = {else}
+<whenitem> -> when(<bexpr>)do<stat> = {when}
+<bexpr> -> RELOP<expr><expr> = {RELOP}
+<expr> -> +(<exprlist>) = {+}
+<expr> -> *(<exprlist>) = {*}
+<expr> -> -<expr><expr> = {-}
+<expr> -> /<expr><expr> = {/}
+<expr> -> NUM = NUM
+<expr> -> ID = ID
+<exprlist> -> <expr><exprlistp> = {'+', '-', '*', '/', NUM, ID}
+<exprlistp> -> <expr><exprlistp> = {'+', '-', '*', '/', NUM, ID}
+<exprlistp> -> eps = {')'}
 */
 
 import java.io.*;
