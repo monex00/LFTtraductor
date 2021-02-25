@@ -43,11 +43,65 @@ public class Lexer {
     }
 
     public Token lexical_scan(BufferedReader br) {
+       
         //ignora tabulazioni e spazi a caso
         while (peek == ' ' || peek == '\t' || peek == '\n'  || peek == '\r') {
             if (peek == '\n') line++;
             readch(br);
         }
+        /* Controllo commento */
+        do{
+            if(peek == '/'){ 
+                boolean comment = true;
+                readch(br);
+                if(peek == '*'){ /* Se è un commento fatto così: /*  */
+                    /*
+                   while(comment){
+                    readch(br);
+                       while(comment && peek == '*'){  
+                        readch(br);
+                        if(peek == '/') comment = false;
+                       }
+                       if(peek == (char)-1){ /* Se ho letto solo l'inizio del commento ma non la fine prima della fine del file, segnalo errore */
+                       /* 
+                        System.out.println("Expected end of comment before EOF");
+                        return new Token(Tag.EOF);
+                       }
+                   }*/
+                    
+                    
+                    while(comment){ /* non funziona con un numero di asterischi dispari all'interno del commento */
+                        readch(br);
+                        if(peek == '*'){
+                            readch(br);
+                            if(peek == '/') comment = false;
+                        }else if(peek == (char)-1){ /* Se ho letto solo l'inizio del commento ma non la fine prima della fine del file, segnalo errore */
+                           
+                        System.out.println("Expected end of comment before EOF");
+                            return new Token(Tag.EOF);
+                        }
+                    }
+                    
+                }else if(peek == '/'){ /* Se è un commento fatto così: //  */
+                    comment = false;
+                    while(peek != '\n'){
+                        if(peek == (char)-1){
+                            return new Token(Tag.EOF);
+                        }
+                        readch(br);
+                    }
+                }else{ /* Se il simbolo / è una divisione returno il Token della div */
+                    return Token.div;
+                }
+                readch(br);
+            }
+            /* Ignoro spazi, a capo per poi verificare la presenza di un altro commento */
+            while (peek == ' ' || peek == '\t' || peek == '\n'  || peek == '\r') {
+                if (peek == '\n') line++;
+                readch(br);
+            }
+        }while(peek == '/'); //In caso di piu' commenti uno dopo l'altro ripeto il procedimento
+        
         //gestire i casi di toker senza attributi
         //// ... gestire i casi di (, ), {, }, +, -, *, /, ; ... //
         switch (peek) {
@@ -77,7 +131,9 @@ public class Lexer {
                 return Token.mult;
             case '/':
                 peek = ' ';
-                return Token.div;            
+                return Token.div;
+            
+                           
             case ';':
                 peek = ' ';
                 return Token.semicolon;
@@ -188,6 +244,7 @@ public class Lexer {
                         tempId += Character.toString(peek);
                         readch(br);
                     }
+
                     if(validNumber(tempId)){
                         return new NumberTok(Tag.NUM, tempId);
                     }else{

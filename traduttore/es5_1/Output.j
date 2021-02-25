@@ -34,33 +34,15 @@
  istore 0
  goto L1
 L1:
+ iload 0
  ldc 0
- istore 1
+ iadd 
+ istore 0
  goto L2
 L2:
-L4:
  iload 0
- ldc 0
- if_icmpgt L5
- goto L3
-L5:
- iload 1
  invokestatic Output/print(I)V
- goto L6
-L6:
- iload 1
- ldc 2
- iadd 
- istore 1
- goto L7
-L7:
- iload 0
- ldc 1
- isub 
- istore 0
- goto L8
-L8:
- goto L4
+ goto L3
 L3:
  goto L0
 L0:

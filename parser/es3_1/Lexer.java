@@ -55,17 +55,33 @@ public class Lexer {
                 boolean comment = true;
                 readch(br);
                 if(peek == '*'){ /* Se è un commento fatto così: /*  */
-                    while(comment){
+                    /*
+                   while(comment){
+                    readch(br);
+                       while(comment && peek == '*'){  
+                        readch(br);
+                        if(peek == '/') comment = false;
+                       }
+                       if(peek == (char)-1){ /* Se ho letto solo l'inizio del commento ma non la fine prima della fine del file, segnalo errore */
+                       /* 
+                        System.out.println("Expected end of comment before EOF");
+                        return new Token(Tag.EOF);
+                       }
+                   }*/
+                    
+                    
+                    while(comment){ /* non funziona con un numero di asterischi dispari all'interno del commento */
                         readch(br);
                         if(peek == '*'){
                             readch(br);
                             if(peek == '/') comment = false;
                         }else if(peek == (char)-1){ /* Se ho letto solo l'inizio del commento ma non la fine prima della fine del file, segnalo errore */
-                            System.out.println("Expected end of comment before EOF");
+                           
+                        System.out.println("Expected end of comment before EOF");
                             return new Token(Tag.EOF);
                         }
                     }
-                    peek = ' ';
+                    
                 }else if(peek == '/'){ /* Se è un commento fatto così: //  */
                     comment = false;
                     while(peek != '\n'){

@@ -26,7 +26,7 @@ public class Lexer {
         }
         //Controllo casi come: 0034, numeri che iniziano con 0 ma hanno cifre diverse da 0 in seguito
         if(number.length()>=2 && number.toCharArray()[0] == '0'){
-            if( number.toCharArray()[1] != '0'){
+            if(number.toCharArray()[1] != '0'){
                 System.out.println("Erroneous number sintax");
                 return false;
             }
@@ -34,12 +34,74 @@ public class Lexer {
        return true; 
     }
 
+    private boolean validateId(String id){
+        boolean validate = false;
+        for(char x : id.toCharArray()){
+            if(x != '_') validate = true;
+        }
+        return validate;
+    }
+
     public Token lexical_scan(BufferedReader br) {
+       
         //ignora tabulazioni e spazi a caso
         while (peek == ' ' || peek == '\t' || peek == '\n'  || peek == '\r') {
             if (peek == '\n') line++;
             readch(br);
         }
+        /* Controllo commento */
+        do{
+            if(peek == '/'){ 
+                boolean comment = true;
+                readch(br);
+                if(peek == '*'){ /* Se è un commento fatto così: /*  */
+                    /*
+                   while(comment){
+                    readch(br);
+                       while(comment && peek == '*'){  
+                        readch(br);
+                        if(peek == '/') comment = false;
+                       }
+                       if(peek == (char)-1){ /* Se ho letto solo l'inizio del commento ma non la fine prima della fine del file, segnalo errore */
+                       /* 
+                        System.out.println("Expected end of comment before EOF");
+                        return new Token(Tag.EOF);
+                       }
+                   }*/
+                    
+                    
+                    while(comment){ /* non funziona con un numero di asterischi dispari all'interno del commento */
+                        readch(br);
+                        if(peek == '*'){
+                            readch(br);
+                            if(peek == '/') comment = false;
+                        }else if(peek == (char)-1){ /* Se ho letto solo l'inizio del commento ma non la fine prima della fine del file, segnalo errore */
+                           
+                        System.out.println("Expected end of comment before EOF");
+                            return new Token(Tag.EOF);
+                        }
+                    }
+                    
+                }else if(peek == '/'){ /* Se è un commento fatto così: //  */
+                    comment = false;
+                    while(peek != '\n'){
+                        if(peek == (char)-1){
+                            return new Token(Tag.EOF);
+                        }
+                        readch(br);
+                    }
+                }else{ /* Se il simbolo / è una divisione returno il Token della div */
+                    return Token.div;
+                }
+                readch(br);
+            }
+            /* Ignoro spazi, a capo per poi verificare la presenza di un altro commento */
+            while (peek == ' ' || peek == '\t' || peek == '\n'  || peek == '\r') {
+                if (peek == '\n') line++;
+                readch(br);
+            }
+        }while(peek == '/'); //In caso di piu' commenti uno dopo l'altro ripeto il procedimento
+        
         //gestire i casi di toker senza attributi
         //// ... gestire i casi di (, ), {, }, +, -, *, /, ; ... //
         switch (peek) {
@@ -69,7 +131,9 @@ public class Lexer {
                 return Token.mult;
             case '/':
                 peek = ' ';
-                return Token.div;            
+                return Token.div;
+            
+                           
             case ';':
                 peek = ' ';
                 return Token.semicolon;
@@ -133,10 +197,11 @@ public class Lexer {
             default:
                 //definisco una variabile stringa per prendere tutto quello che devo leggere
                 // ... gestire il caso degli identificatori e delle parole chiave    
-                if (Character.isLetter(peek)) {
+                if (Character.isLetter(peek) || peek == '_') {
+                    
                     tempId = Character.toString(peek);
                     readch(br);
-                    while(Character.isLetter(peek) || Character.isDigit(peek) ){
+                    while(Character.isLetter(peek) || Character.isDigit(peek) || peek == '_' ){
                         tempId += Character.toString(peek);
                         readch(br);
                     }
@@ -161,27 +226,38 @@ public class Lexer {
                         case "read":
                             return Word.read; 
                         default:
-                            return new Word(Tag.ID, tempId);       
+                            if(validateId(tempId)){
+                                return new Word(Tag.ID, tempId);
+                            }else{
+                                System.out.println("Error identifier sintax");
+                                return null;
+                            }      
                     }
+                //quando ho identificato che la stringa non inizia con una lettera, posso andare a cercare nei numeri
+              
                 }else if (Character.isDigit(peek)) {
                 //controllo che i numeri rispettino l'espressione regolare data 
-                // ... gestire il caso dei numeri ...
+                // ... gestire il caso dei numeri ... 
                     tempId = Character.toString(peek);
                     readch(br);
                     while(Character.isLetter(peek) || Character.isDigit(peek) ){
                         tempId += Character.toString(peek);
                         readch(br);
                     }
+
                     if(validNumber(tempId)){
                         return new NumberTok(Tag.NUM, tempId);
+                    }else{
+                        peek = ' ';
+                        return null;
                     }
-                    peek = ' ';
-                    return null;
+
                 } else {
                         System.err.println("Erroneous character: " 
                                 + peek );
                         return null;
                 }
-        }
+         }
     }
+
 }
